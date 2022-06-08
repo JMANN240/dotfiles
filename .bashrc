@@ -44,23 +44,6 @@ unset _warning_prefix
 unset _warning_file
 unset _warning
 
-# If MSYS2_PS1 is set, use that as default PS1;
-# if a PS1 is already set and exported, use that;
-# otherwise set a default prompt
-# of user@host, MSYSTEM variable, and current_directory
-[[ -n "${MSYS2_PS1}" ]] && export PS1="${MSYS2_PS1}"
-# if we have the "High Mandatory Level" group, it means we're elevated
-#if [[ -n "$(command -v getent)" ]] && id -G | grep -q "$(getent -w group 'S-1-16-12288' | cut -d: -f2)"
-#  then _ps1_symbol='\[\e[1m\]#\[\e[0m\]'
-#  else _ps1_symbol='\$'
-#fi
-[[ $(declare -p PS1 2>/dev/null | cut -c 1-11) = 'declare -x ' ]] || \
-  export PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\h \[\e[35m\]$MSYSTEM\[\e[0m\] \[\e[33m\]\w\[\e[0m\]\n'"${_ps1_symbol}"' '
-unset _ps1_symbol
-
-# Uncomment to use the terminal colours set in DIR_COLORS
-# eval "$(dircolors -b /etc/DIR_COLORS)"
-
 # Fixup git-bash in non login env
 shopt -q login_shell || . /etc/profile.d/git-prompt.sh
 
@@ -76,7 +59,36 @@ else
     PYTHON_VIRTUALENV="[`basename \"$VIRTUAL_ENV\"`] "
 fi
 
-export PS1="${PYTHON_VIRTUALENV}\[\033[38;5;10m\]\u@\h\[$(tput sgr0)\] [\[$(tput sgr0)\]\[\033[38;5;6m\]\W\[$(tput sgr0)\]]\[\033[38;5;11m\]\[\033[33m\]\$(parse_git_branch) $\[$(tput sgr0)\] \[$(tput sgr0)\]"
+# Set a custom propmt
+PROMPT_COMMAND=prompt_cmd
+
+prompt_cmd() {
+    local EXIT="$?"
+
+    PS1=""
+
+    if [ $EXIT -eq 0 ]; then 
+        PS1+="\[$(tput setaf 2)\]✓ "; 
+    else 
+        PS1+="\[$(tput setaf 1)\]✗ "; 
+    fi
+
+    BRANCH=$(parse_git_branch)
+
+    PS1+="\[$(tput setaf 2)\]\u@\h\[$(tput sgr0)\] "
+    PS1+="[\[$(tput setaf 6)\]\w\[$(tput sgr0)\]] "
+    if [[ $BRANCH != "" ]]; then 
+        PS1+="("
+        if [[ $BRANCH = "master" ]]; then 
+            PS1+="\[$(tput bold)\]"; 
+            PS1+="\[$(tput setaf 1)\]"; 
+        else 
+            PS1+="\[$(tput setaf 3)\]"; 
+        fi
+        PS1+="$BRANCH\[$(tput sgr0)\]) "
+    fi
+    PS1+="\[$(tput setaf 3)\]\$\[$(tput sgr0)\] "
+}
 
 act () {
     if [ "$#" -eq 0 ]
@@ -101,7 +113,9 @@ ytdlm () {
     youtube-dl -x --audio-format mp3 -o "C:\Users\JT\Music\%(title)s.%(ext)s" https://www.youtube.com/playlist?list=PLMejUA9a8sUOyjcGkA4tEK-ZAg-hCZaNX
 }
 
-alias bashrc="code 'C:\Program Files\Git\etc\bash.bashrc'"
+# Aliases for editing bashrc
+alias rebash="source ~/.bashrc"
+alias bashrc="code ~/.bashrc"
 
 rcode () {
     cargo new ~/Code/$1 & code ~/Code/$1
@@ -111,6 +125,67 @@ rcode () {
     FILENAME=$(basename "$1" | sed 's/\(.*\)\..*/\1/')
     echo "$FILENAME.mp3"
     ffmpeg -i "$1" "$FILENAME.mp3" && rm "$1"
+}
+
+# Some nice greps
+export GREP_CONTEXT_SIZE=3
+
+sgrep() {
+    grep -n --color -C $GREP_CONTEXT_SIZE "$*"
+}
+
+rgrep() {
+    grep -Rn --color -C $GREP_CONTEXT_SIZE "$*"
+}
+
+hist() {
+    history | sgrep $*
+}
+
+wt() {
+    WORKTREE_PATHS=($(git worktree list --porcelain | sed -n 's/worktree \(.*\)/\1/gp' | xargs));
+    echo ${WORKTREE_PATHS[@]} | sed 's/ /\n/g' | sed '=' | sed 'N; s/\n/ /' | sed 's/^\(.*\) /(\1) /g';
+    echo -n "Switch to worktree: ";
+    read WORKTREE_NUMBER;
+    WORKTREE_PATH=${WORKTREE_PATHS[WORKTREE_NUMBER-1]};
+    cd $WORKTREE_PATH;
+}
+
+ga() {
+    GIT_ROOT=$(git rev-parse --show-toplevel);
+    FILES=($(git status -s --porcelain | sed -n 's/ . \(.*\)/\1/gp' | xargs));
+    echo ${FILES[@]} | sed 's/ /\n/g' | sed '=' | sed 'N; s/\n/ /' | sed 's/^\(.*\) /(\1) /g';
+    echo -n "Add files: ";
+    read -a ADD_FILE_INDICES;
+    ADD_FILES=();
+    for FILE_INDEX in ${ADD_FILE_INDICES[@]}; do
+        ADD_FILES+=($GIT_ROOT/${FILES[FILE_INDEX-1]})
+    done
+    git add ${ADD_FILES[@]}
+}
+
+ffind() {
+    BRANCH=$(parse_git_branch)
+
+    if [[ $BRANCH != "" ]]; then 
+        SEARCH_ROOT=$(git rev-parse --show-toplevel)
+    else
+        SEARCH_ROOT="."
+    fi
+
+    find $SEARCH_ROOT -type f -iname "*$1*"
+}
+
+fopen() {
+    FOUND_FILES=($(ffind $1 | xargs));
+    echo ${FOUND_FILES[@]} | sed 's/ /\n/g' | sed '=' | sed 'N; s/\n/ /' | sed 's/^\(.*\) /(\1) /g';
+    echo -n "Open files: ";
+    read -a OPEN_FILE_INDICES;
+    OPEN_FILES=();
+    for FILE_INDEX in ${OPEN_FILE_INDICES[@]}; do
+        OPEN_FILES+=(${FOUND_FILES[FILE_INDEX-1]})
+    done
+    code ${OPEN_FILES[@]}
 }
 
 export HISTCONTROL=ignoreboth
