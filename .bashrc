@@ -142,6 +142,10 @@ hist() {
     history | sgrep $*
 }
 
+oneliner() {
+    tr '\n' ' '
+}
+
 wt() {
     WORKTREE_PATHS=($(git worktree list --porcelain | sed -n 's/worktree \(.*\)/\1/gp' | xargs));
     echo ${WORKTREE_PATHS[@]} | sed 's/ /\n/g' | sed '=' | sed 'N; s/\n/ /' | sed 's/^\(.*\) /(\1) /g';
@@ -151,8 +155,12 @@ wt() {
     cd $WORKTREE_PATH;
 }
 
+groot() {
+    git rev-parse --show-toplevel
+}
+
 ga() {
-    GIT_ROOT=$(git rev-parse --show-toplevel);
+    GIT_ROOT=$(groot)
     FILES=($(git status -s --porcelain | sed -n 's/ . \(.*\)/\1/gp' | xargs));
     echo ${FILES[@]} | sed 's/ /\n/g' | sed '=' | sed 'N; s/\n/ /' | sed 's/^\(.*\) /(\1) /g';
     echo -n "Add files: ";
@@ -164,6 +172,8 @@ ga() {
     git add ${ADD_FILES[@]}
 }
 
+export FFIND_IGNORED_EXTENSIONS=( class )
+
 ffind() {
     BRANCH=$(parse_git_branch)
 
@@ -173,11 +183,27 @@ ffind() {
         SEARCH_ROOT="."
     fi
 
-    find $SEARCH_ROOT -type f -iname "*$1*"
+    IGNORE_LIST=$(echo ${FFIND_IGNORED_EXTENSIONS[@]} | sed 's/ /\\\|/')
+
+    find $SEARCH_ROOT -type f -iname "*$1*" | sed "/\.\($IGNORE_LIST\)/d"
 }
 
 fopen() {
+    # An array of all of the files which match the argument given
     FOUND_FILES=($(ffind $1 | xargs));
+
+    # If there aren't any, exit with -1
+    if [ ${#FOUND_FILES[@]} -eq 0 ]; then
+        return -1;
+    fi
+    
+    # If there is only one, exit with 0
+    if [ ${#FOUND_FILES[@]} -eq 1 ]; then
+        code ${FOUND_FILES[0]}
+        return 0;
+    fi
+
+    # Otherwise, prompt the use about which ones they want to open
     echo ${FOUND_FILES[@]} | sed 's/ /\n/g' | sed '=' | sed 'N; s/\n/ /' | sed 's/^\(.*\) /(\1) /g';
     echo -n "Open files: ";
     read -a OPEN_FILE_INDICES;
@@ -186,6 +212,17 @@ fopen() {
         OPEN_FILES+=(${FOUND_FILES[FILE_INDEX-1]})
     done
     code ${OPEN_FILES[@]}
+}
+
+# Perl one-liner to get rid of trailing whitespace
+dewhite() {
+    perl -i -pe 's|^(.*?)([\t ]*)$|$1|' $*
+}
+
+gdw() {
+    GIT_ROOT=$(groot);
+    DIFF_FILES=$(git diff --name-only master $(parse_git_branch) | sed -e "s|^|$GIT_ROOT/|" | oneliner)
+    dewhite $DIFF_FILES
 }
 
 export HISTCONTROL=ignoreboth
