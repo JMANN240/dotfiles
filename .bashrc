@@ -214,6 +214,11 @@ fopen() {
     code ${OPEN_FILES[@]}
 }
 
+df() {
+    GIT_ROOT=$(groot);
+    git diff --name-only master...$(parse_git_branch) | sed -e "s|^|$GIT_ROOT/|"
+}
+
 # Perl one-liner to get rid of trailing whitespace
 dewhite() {
     perl -i -pe 's|^(.*?)([\t ]*)$|$1|' $*
@@ -223,6 +228,43 @@ gdw() {
     GIT_ROOT=$(groot);
     DIFF_FILES=$(git diff --name-only master $(parse_git_branch) | sed -e "s|^|$GIT_ROOT/|" | oneliner)
     dewhite $DIFF_FILES
+}
+
+gaz() {
+    DIFF_FILES=$(df | oneliner)
+    alphabetize $DIFF_FILES
+}
+
+wtr() {
+    WORKTREE_BRANCHES=($(git worktree list --porcelain | sed -E -n 's/branch refs\/heads\/(.*)/\1/p' | xargs))
+    WORKTREE_PATHS=($(git worktree list --porcelain | sed -E -n 's/worktree (.*)/\1/p' | xargs))
+    DEAD_BRANCHES=($(git branch -vv | sed -n -E 's/^.*\[origin\/(.*): gone\].*$/\1/p' | xargs));
+    for DEAD_BRANCH in ${DEAD_BRANCHES[@]}; do
+        for INDEX in ${!WORKTREE_BRANCHES[@]}; do
+            if [ "${DEAD_BRANCH}" = "${WORKTREE_BRANCHES[$INDEX]}" ]; then
+                git worktree remove -f ${WORKTREE_PATHS[$INDEX]};
+                git branch -D $DEAD_BRANCH;
+                break;
+            fi
+        done
+    done
+}
+
+gbr() {
+    DEAD_BRANCHES=($(git branch -vv | sed -n -E 's/^.*\[origin\/(.*): gone\].*$/\1/p' | xargs));
+    for DEAD_BRANCH in ${DEAD_BRANCHES[@]}; do
+        git branch -D $DEAD_BRANCH;
+    done
+}
+
+gbrm() {
+    BRANCHES=($(git branch | sed -n -E 's/^..([[:alnum:]_-]*)/\1/gp' | xargs));
+    echo ${BRANCHES[@]} | sed 's/ /\n/g' | sed '=' | sed 'N; s/\n/ /' | sed 's/^\(.*\) /(\1) /g';
+    echo -n "Remove branches: ";
+    read -a REMOVE_BRANCH_INDICES;
+    for BRANCH_INDEX in ${REMOVE_BRANCH_INDICES[@]}; do
+        git branch -D ${BRANCHES[BRANCH_INDEX-1]}
+    done
 }
 
 export HISTCONTROL=ignoreboth
