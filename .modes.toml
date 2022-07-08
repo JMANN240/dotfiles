@@ -1,0 +1,21 @@
+[window]
+key = "C-w"
+
+[window.keys]
++ = "new-window"
+- = "kill-window"
+h = "split-window -h"
+H = "split-window -bh"
+v = "split-window -v"
+V = "split-window -bv"
+Left = "select-pane -L"
+Up = "select-pane -U"
+Down = "select-pane -D"
+Right = "select-pane -R"
+C-Left = "resize-pane -L"
+C-Up = "resize-pane -U"
+C-Down = "resize-pane -D"
+C-Right = "resize-pane -R"
+a = "select-window -p"
+d = "select-window -n"
+s = "select-window -l"
