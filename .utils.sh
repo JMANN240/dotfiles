@@ -68,5 +68,5 @@ dewhite() {
 
 # Alphabetize the import lists of the given files
 alphabetize(){
-    python3 /home/jt/alphabetize.py $*
+    python3 ~/.alphabetize.py $*
 }
