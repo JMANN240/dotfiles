@@ -1,9 +1,16 @@
+[root]
+key = "C-r"
+
+[root.keys]
+C-v = "paste-buffer"
+
 [window]
 key = "C-w"
 
 [window.keys]
 + = "new-window"
 - = "kill-window"
+x = "kill-pane"
 h = "split-window -h"
 H = "split-window -bh"
 v = "split-window -v"
@@ -19,3 +26,21 @@ C-Right = "resize-pane -R"
 a = "select-window -p"
 d = "select-window -n"
 s = "select-window -l"
+
+[scroll]
+key = "C-s"
+copy = true
+
+[scroll.copykeys]
+C-Up = "scroll-up"
+C-Down = "scroll-down"
+Up = "cursor-up"
+Down = "cursor-down"
+Left = "cursor-left"
+Right = "cursor-right"
+Space = "begin-selection"
+Enter = "copy-selection-and-cancel"
+C-c = "copy-selection-and-cancel"
+Escape = "clear-selection"
+PageUp = "page-up"
+PageDown = "page-down"
