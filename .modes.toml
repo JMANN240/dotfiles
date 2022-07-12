@@ -31,6 +31,10 @@ s = "select-window -l"
 key = "C-s"
 copy = true
 
+[scroll.keys]
+s = "command-prompt -i -p '(search down)' -I '#{pane_search_string}' \"send-keys -X search-forward-incremental \"%%\"\""
+S = "command-prompt -i -p '(search up)' -I '#{pane_search_string}' \"send-keys -X search-backward-incremental \"%%\"\""
+
 [scroll.copykeys]
 C-Up = "scroll-up"
 C-Down = "scroll-down"
@@ -44,3 +48,7 @@ C-c = "copy-selection-and-cancel"
 Escape = "clear-selection"
 PageUp = "page-up"
 PageDown = "page-down"
+Home = "start-of-line"
+End = "end-of-line"
+n = "search-again"
+N = "search-reverse"
