@@ -84,3 +84,11 @@ gaz() {
     DIFF_FILES=$(gdiff | xargs)
     alphabetize $DIFF_FILES
 }
+
+gpb() {
+    BEHIND_BRANCHES=($(git branch -vv | sed -n -E 's/^.*\[origin\/(.*): behind.*\].*$/\1/p' | xargs));
+    for BEHIND_BRANCH in ${BEHIND_BRANCHES[@]}; do
+        git fetch origin $BEHIND_BRANCH:$BEHIND_BRANCH --quiet;
+        echo "Fetched $BEHIND_BRANCH";
+    done;
+}
