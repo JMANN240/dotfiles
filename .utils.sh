@@ -70,3 +70,6 @@ dewhite() {
 alphabetize(){
     python3 ~/.alphabetize.py $*
 }
+
+# Make ranger cd you to the last directory you were in
+alias ranger='ranger --choosedir="$HOME/.lastdir"; cd $(cat ~/.lastdir)'
