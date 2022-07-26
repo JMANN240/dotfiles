@@ -3,6 +3,11 @@ groot() {
     git rev-parse --show-toplevel
 }
 
+# Determine the current relative path inside the git repo
+gpath() {
+	pwd | perl -pe "s|$(groot)||"
+}
+
 # Determine the active git branch
 gbranch() {
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
@@ -35,7 +40,8 @@ wt() {
     echo -n "Switch to worktree: ";
     read WORKTREE_NUMBER;
     WORKTREE_PATH=${WORKTREE_PATHS[WORKTREE_NUMBER-1]};
-    cd $WORKTREE_PATH;
+    WORKING_PATH=$(gpath)
+    cd "$WORKTREE_PATH$WORKING_PATH";
 }
 
 # Remove dead worktrees and branches
@@ -73,6 +79,42 @@ gbrm() {
     done
 }
 
+# Pretty printing of branch info
+gb() {
+    UNTRACKED_BRANCHES=($(git branch -vv | sed -n -E 's/^..([[:graph:]]*) +[[:xdigit:]]{9} [^\[].*$/\1/p' | xargs));
+    ALIVE_BRANCHES=($(git branch -vv | sed -n -E 's/^.*\[origin\/(.*)\].*$/\1/p' | xargs));
+    BEHIND_BRANCHES=($(git branch -vv | sed -n -E 's/^.*\[origin\/(.*): behind.*\].*$/\1/p' | xargs));
+    DEAD_BRANCHES=($(git branch -vv | sed -n -E 's/^.*\[origin\/(.*): gone\].*$/\1/p' | xargs));
+
+    if [ ${#UNTRACKED_BRANCHES[@]} -gt 0 ]; then
+        tput setaf 7
+        for BRANCH in ${UNTRACKED_BRANCHES[@]}; do
+            echo "  $BRANCH"
+        done
+    fi
+
+    if [ ${#ALIVE_BRANCHES[@]} -gt 0 ]; then
+        tput setaf 2
+        for BRANCH in ${ALIVE_BRANCHES[@]}; do
+            echo "  $BRANCH"
+        done
+    fi
+
+    if [ ${#BEHIND_BRANCHES[@]} -gt 0 ]; then
+        tput setaf 3
+        for BRANCH in ${BEHIND_BRANCHES[@]}; do
+            echo "  $BRANCH"
+        done
+    fi
+
+    if [ ${#DEAD_BRANCHES[@]} -gt 0 ]; then
+        tput setaf 1
+        for BRANCH in ${DEAD_BRANCHES[@]}; do
+            echo "  $BRANCH"
+        done
+    fi
+}
+
 # Remove white lines and trailing whitespace from the files than have changed since master
 gdw() {
     DIFF_FILES=$(gdiff | xargs)
@@ -85,10 +127,33 @@ gaz() {
     alphabetize $DIFF_FILES
 }
 
+# Selectively alphabetize the import lists of the files than have changed since master
+gazm() {
+    DIFF_FILES=($(gdiff | xargs));
+    promptify ${DIFF_FILES[@]} "Alphabetize: ";
+    for DIFF_FILE_INDEX in ${PROMPT_INDICES[@]}; do
+        alphabetize ${DIFF_FILES[DIFF_FILE_INDEX-1]}
+    done
+}
+
+# Fetch all behind branches
 gpb() {
     BEHIND_BRANCHES=($(git branch -vv | sed -n -E 's/^.*\[origin\/(.*): behind.*\].*$/\1/p' | xargs));
     for BEHIND_BRANCH in ${BEHIND_BRANCHES[@]}; do
         git fetch origin $BEHIND_BRANCH:$BEHIND_BRANCH --quiet;
         echo "Fetched $BEHIND_BRANCH";
     done;
+}
+
+# Search My Lines: grep for a pattern in files that you have changed in this branch
+sml() {
+    export GIT_USERNAME=$(git config user.name);
+    DIFF_FILES=($(gdiff | xargs));
+    GIT_ROOT=$(groot)
+    OLD_GREP_CONTEXT_SIZE=$GREP_CONTEXT_SIZE;
+    GREP_CONTEXT_SIZE=0;
+    for DIFF_FILE in ${DIFF_FILES[@]}; do
+        git blame --line-porcelain $DIFF_FILE | perl -0777 -pe 's/[[:xdigit:]]{40} [[:digit:]]+ ([[:digit:]]+)(?: [[:digit:]]+)?\nauthor (.*)\n(?:.*\n){8,9}filename (.*)\n(?:\t| {8})(.*)/$2:$3:$1: $4/g' | sed -n "s|$GIT_USERNAME:| $GIT_ROOT/|p" | sgrep "$*"
+    done;
+    GREP_CONTEXT_SIZE=$OLD_GREP_CONTEXT_SIZE;
 }
