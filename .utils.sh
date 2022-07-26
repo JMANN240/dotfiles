@@ -68,8 +68,32 @@ dewhite() {
 
 # Alphabetize the import lists of the given files
 alphabetize(){
-    python3 ~/.alphabetize.py $*
+    python3 /home/jt/.alphabetize.py $*
 }
 
 # Make ranger cd you to the last directory you were in
 alias ranger='ranger --choosedir="$HOME/.lastdir"; cd $(cat ~/.lastdir)'
+
+# Prompt for the indices from an array
+promptify() {
+    ARGV=($@);
+    ARGC=${#ARGV[@]}
+    ARRAY=${ARGV[@]:0:ARGC-1}
+    PROMPT_TEXT=${ARGV[ARGC-1]}
+    echo ${ARRAY[@]} | sed 's/ /\n/g' | sed '=' | sed 'N; s/\n/ /' | sed 's/^\(.*\) /(\1) /g';
+    echo -n "$PROMPT_TEXT ";
+    read -a PROMPT_INDICES;
+}
+
+# Super Fuzzy Find
+sffind() {
+    BRANCH=$(gbranch)
+
+    if [[ $BRANCH != "" ]]; then 
+        SEARCH_ROOT=$(git rev-parse --show-toplevel)
+    else
+        SEARCH_ROOT="."
+    fi
+
+    grep -RnI --color -C 0 -- "$*" $SEARCH_ROOT
+}
