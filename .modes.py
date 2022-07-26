@@ -14,6 +14,13 @@ for mode, details in modes_config.items():
     side_effect = ""
     anti_side_effect = ""
 
+    if (details.get('side_effect', '') != ""):
+        side_effect += f" \; {details.get('side_effect', '')}"
+
+    if (details.get('anti_side_effect', '') != ""):
+        anti_side_effect += f" \; {details.get('anti_side_effect', '')}"
+        
+
     if details.get('copy', False):
         side_effect += " \; copy-mode"
         anti_side_effect += " \; send-keys -X cancel"
@@ -30,6 +37,13 @@ for mode, details in modes_config.items():
     if len(keybinds.items()) > 0:
         for key, command in keybinds.items():
             key_line = f"bind-key -T {mode} {key} {command}"
+            lines.append(key_line)
+        lines.append("")
+
+    keyunbinds = details.get('unkeys', {})
+    if len(keyunbinds) > 0:
+        for key in keyunbinds:
+            key_line = f"bind-key -T {mode} {key} send-keys {key}"
             lines.append(key_line)
         lines.append("")
 
