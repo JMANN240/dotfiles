@@ -3,12 +3,21 @@ key = "C-r"
 
 [root.keys]
 C-v = "paste-buffer"
+C-M-r = "new-window 'vim ~/.tmux.conf'"
+C-M-m = "new-window 'vim ~/.modes.toml'"
+
+[session]
+key = "M-s"
+
+[session.keys]
+x = '''set-option key-table root \; split-window -h "tmux list-sessions | fzf -m --reverse | sed -n 's/:.*$//p' | xargs -I session_id tmux kill-session -t session_id"'''
+M-s = '''set-option key-table root \; split-window -h "tmux list-sessions | fzf --reverse | sed -n 's/:.*$//p' | xargs tmux switch-client -t"'''
 
 [window]
 key = "C-w"
 
 [window.keys]
-+ = "new-window"
++ = "new-window -a"
 - = "kill-window"
 x = "kill-pane"
 h = "split-window -h"
@@ -52,3 +61,7 @@ Home = "start-of-line"
 End = "end-of-line"
 n = "search-again"
 N = "search-reverse"
+
+[vim]
+key="M-v"
+unkeys = ["C-c", "C-x", "C-v"]
