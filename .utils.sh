@@ -1,6 +1,11 @@
 # Some nice greps
 export GREP_CONTEXT_SIZE=3
 
+# Basic mkcd
+mkcd() {
+	mkdir -p "$1" && cd "$1";
+}
+
 # Super GREP
 sgrep() {
     grep -nI --color -C $GREP_CONTEXT_SIZE -- "$*"
@@ -61,6 +66,14 @@ fopen() {
     code ${OPEN_FILES[@]}
 }
 
+# An implementation of fopen that uses fzf and opens in vim
+vopen() {
+    FILES=$(fzf -m --exact --query="$1" --select-1)
+    if [[ $FILES != "" ]]; then
+        vim -p $FILES
+    fi
+}
+
 # Perl one-liner to get rid of trailing whitespace
 dewhite() {
     perl -i -pe 's|^(.*?)([\t ]*)$|$1|' $*
@@ -96,4 +109,48 @@ sffind() {
     fi
 
     grep -RnI --color -C 0 -- "$*" $SEARCH_ROOT
+}
+
+# If clientserver is enabled, use it
+vim () {
+    VIM_PATH=$(which vim 2>/dev/null)
+
+    if [ -z $VIM_PATH ]; then
+        echo "$SHELL: vim: command not found"
+        return 127;
+    fi
+    
+    $VIM_PATH --serverlist | grep -q VIM
+
+    if [ $? -eq 0 ]; then
+        if [ $# -eq 0 ]; then
+            $VIM_PATH
+        else
+            $VIM_PATH --servername vim --remote-tab "$@"
+            tmux select-pane -t $(cat ~/.vim_pane_id)
+        fi
+    else
+        $VIM_PATH --servername vim "$@"
+    fi
+}
+
+# Vim file explorer
+vfe () {
+    if [ -z "$(gbranch)" ]; then
+        SEARCH_ROOT="$(pwd)"
+    else
+        SEARCH_ROOT="$(groot)"
+    fi
+
+    FILES=$(find $SEARCH_ROOT | sed -nE "s|$SEARCH_ROOT(.*)|\1|p")
+
+    while true
+    do
+        OUTPUT=$(echo "$FILES" | sed 's/ /\n/' | fzf --exact --multi)
+        if [ -z "$OUTPUT" ];  then
+            break;
+        else
+            /usr/bin/vim $(echo $OUTPUT | sed -E "s|[^ ]+|$SEARCH_ROOT&|g")
+        fi
+    done
 }
