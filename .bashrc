@@ -50,3 +50,5 @@ include ~/.registers.sh
 if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
   tmux new-session
 fi
+
+export FZF_DEFAULT_COMMAND="find -L ! -name '*.class'"
