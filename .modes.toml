@@ -12,6 +12,7 @@ key = "M-s"
 [session.keys]
 x = '''set-option key-table root \; split-window -h "tmux list-sessions | fzf -m --reverse | sed -n 's/:.*$//p' | xargs -I session_id tmux kill-session -t session_id"'''
 M-s = '''set-option key-table root \; split-window -h "tmux list-sessions | fzf --reverse | sed -n 's/:.*$//p' | xargs tmux switch-client -t"'''
+n = '''set-option key-table root \; new-session'''
 
 [window]
 key = "C-w"
@@ -64,4 +65,4 @@ N = "search-reverse"
 
 [vim]
 key="M-v"
-unkeys = ["C-c", "C-x", "C-v"]
+unkeys = ["C-c", "C-x", "C-v", "C-w", "M-r"]
