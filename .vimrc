@@ -4,6 +4,13 @@ set hlsearch
 set incsearch
 set ignorecase
 set number
+set wildmenu
+
+set shiftwidth=4
+set tabstop=4
+
+set ai
+set si
 
 hi TabLine NONE
 hi TabLineSel term=reverse cterm=reverse gui=reverse
