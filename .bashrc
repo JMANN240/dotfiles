@@ -47,7 +47,7 @@ include ~/.git.sh
 include ~/.java.sh
 include ~/.registers.sh
 
-if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
   tmux new-session
 fi
 
