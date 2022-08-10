@@ -150,7 +150,7 @@ vfe () {
         if [ -z "$OUTPUT" ];  then
             break;
         else
-            /usr/bin/vim $(echo $OUTPUT | sed -E "s|[^ ]+|$SEARCH_ROOT&|g")
+            vim $(echo $OUTPUT | sed -E "s|[^ ]+|$SEARCH_ROOT&|g")
         fi
     done
 }
