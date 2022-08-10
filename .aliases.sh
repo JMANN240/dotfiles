@@ -7,3 +7,6 @@ alias ls="ls --color=auto"
 
 # Vim based editor layout in tmux
 alias vcode="source ~/.vcode.sh"
+
+# Lazy Git (Thanks, Frankie)
+alias lg="lazygit"
