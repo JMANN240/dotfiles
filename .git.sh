@@ -57,8 +57,11 @@ wt() {
         echo -n "Switch to worktree: ";
         read WORKTREE_NUMBER;
         WORKTREE_PATH=${WORKTREE_PATHS[WORKTREE_NUMBER-1]};
-        WORKING_PATH=$(gpath)
-        cd "$WORKTREE_PATH$WORKING_PATH";
+        WORKING_PATH_COMPONENTS=($(gpath | sed -E -n 's/\/([^/]+)/\1 /gp' | xargs));
+        cd $WORKTREE_PATH
+        for COMPONENT in ${WORKING_PATH_COMPONENTS[@]}; do
+            cd $COMPONENT 2> /dev/null
+        done
     else
         return 1;
     fi
@@ -237,4 +240,12 @@ sml() {
     else
         return 1;
     fi
+}
+
+gdm() {
+	if [ ! -z "$(gbranch)" ]; then
+		git diff master..$(gbranch)
+	else
+		return 1;
+	fi
 }
