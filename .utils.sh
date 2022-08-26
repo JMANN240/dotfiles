@@ -116,21 +116,24 @@ vim () {
     VIM_PATH=$(which vim 2>/dev/null)
 
     if [ -z $VIM_PATH ]; then
-        echo "$SHELL: vim: command not found"
+        echo "$SHELL: vim: command not found";
         return 127;
     fi
     
-    $VIM_PATH --serverlist | grep -q VIM
+    $VIM_PATH --version | grep -q +clientserver;
+	HAS_CLIENTSERVER="$?";
 
-    if [ $? -eq 0 ]; then
-        if [ $# -eq 0 ]; then
-            $VIM_PATH
-        else
+    if [ $HAS_CLIENTSERVER -eq 0 ]; then
+		$VIM_PATH --serverlist | grep -q VIM;
+		SERVER_EXISTS="$?";
+
+        if [ $SERVER_EXISTS -eq 0 ]; then
             $VIM_PATH --servername vim --remote-tab "$@"
-            tmux select-pane -t $(cat ~/.vim_pane_id)
+        else
+            $VIM_PATH --servername vim "$@"
         fi
     else
-        $VIM_PATH --servername vim "$@"
+        $VIM_PATH "$@"
     fi
 }
 
@@ -153,4 +156,35 @@ vfe () {
             vim $(echo $OUTPUT | sed -E "s|[^ ]+|$SEARCH_ROOT&|g")
         fi
     done
+}
+
+ytdl () {
+    youtube-dl -f "best,[height<=1080]" -o "~/Videos/%(title)s.%(ext)s" $1
+}
+
+ytdlpl () {
+    youtube-dl -f "best,[height<=1080]" -o "~/Videos/%(title)s.%(ext)s" https://www.youtube.com/playlist?list=PLMejUA9a8sUPT80FaT8GPP9_agfF2ELzi
+}
+
+ytdlm () {
+    youtube-dl -x --audio-format mp3 -o "~/Music/%(title)s.%(ext)s" https://www.youtube.com/playlist?list=PLMejUA9a8sUOyjcGkA4tEK-ZAg-hCZaNX
+}
+
+up () {
+    sudo apt update -y
+    sudo apt upgrade -y
+}
+
+alias i3conf="vim ~/.config/i3/config"
+
+alias ard="arduino-cli"
+
+esp () {
+	ard compile --fqbn esp8266:esp8266:generic $1 &&
+	ard upload -p /dev/ttyUSB0 --fqbn esp8266:esp8266:generic $1
+}
+
+opencm () {
+	ard compile --fqbn OpenCM904:OpenCM904:OpenCM904 $1 &&
+	ard upload -p /dev/ttyACM0 --fqbn OpenCM904:OpenCM904:OpenCM904 $1
 }
