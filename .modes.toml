@@ -65,4 +65,4 @@ N = "search-reverse"
 
 [vim]
 key="M-v"
-unkeys = ["C-c", "C-x", "C-v", "C-w", "M-r"]
+unkeys = ["C-c", "C-x", "C-v", "C-w", "M-r", "C-s", "C-q"]
