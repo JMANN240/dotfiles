@@ -113,21 +113,22 @@ sffind() {
 
 # If clientserver is enabled, use it
 vim () {
+	NARGS="$#"
     VIM_PATH=$(which vim 2>/dev/null)
 
     if [ -z $VIM_PATH ]; then
         echo "$SHELL: vim: command not found";
         return 127;
     fi
-    
-    $VIM_PATH --version | grep -q +clientserver;
+
+	$VIM_PATH --version | grep -q +clientserver;
 	HAS_CLIENTSERVER="$?";
 
     if [ $HAS_CLIENTSERVER -eq 0 ]; then
 		$VIM_PATH --serverlist | grep -q VIM;
 		SERVER_EXISTS="$?";
 
-        if [ $SERVER_EXISTS -eq 0 ]; then
+        if [ $SERVER_EXISTS -eq 0 ] && [[ $NARGS -ne 0 ]]; then
             $VIM_PATH --servername vim --remote-tab "$@"
         else
             $VIM_PATH --servername vim "$@"
@@ -178,6 +179,11 @@ up () {
 alias i3conf="vim ~/.config/i3/config"
 
 alias ard="arduino-cli"
+
+ardnano () {
+	ard compile --fqbn arduino:avr:nano $1 &&
+	ard upload -p /dev/ttyUSB0 --fqbn arduino:avr:nano:cpu=atmega328old $1
+}
 
 esp () {
 	ard compile --fqbn esp8266:esp8266:generic $1 &&

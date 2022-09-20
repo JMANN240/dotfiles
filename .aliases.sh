@@ -10,3 +10,9 @@ alias vcode="source ~/.vcode.sh"
 
 # Lazy Git (Thanks, Frankie)
 alias lg="lazygit"
+
+# Scan for wifi networks on my laptop
+alias wscan="sudo iwlist wlp2s0 scan"
+
+# Restart the network manager on my laptop
+alias wscan="sudo service network-manager restart"

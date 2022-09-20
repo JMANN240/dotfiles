@@ -8,6 +8,9 @@ case $- in
       *) return;;
 esac
 
+# Disable stopping and starting the terminal, outdated garbo
+stty -ixon
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
