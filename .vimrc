@@ -22,6 +22,12 @@ map <M-r> :source ~/.vimrc<CR>
 vmap <C-c> y
 vmap <C-x> x
 imap <C-v> <esc>Pi
+nmap <C-s> :w<CR>
+imap <C-s> <esc>:w<CR>i
+nmap <C-q> :q<CR>
+imap <C-q> <esc>:q<CR>
+
+autocmd BufWritePost *.tex :call system("pdflatex", expand('%:p'))
 
 for i in range(1,12) | execute 'map <F'.i.'> '.i.'gt' | endfor
 
