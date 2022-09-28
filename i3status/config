@@ -25,16 +25,16 @@ order += "volume master"
 
 wireless _first_ {
         format_up = " W: %quality @ %ip (%essid) "
-        format_down = "W: X"
+        format_down = " W: X "
 }
 
 ethernet _first_ {
         format_up = " E: %speed @ %ip "
-        format_down = "E: X"
+        format_down = " E: X "
 }
 
 battery all {
-        format = " %status %percentage "
+    format = " %status %percentage "
 	low_threshold = 10
 	threshold_type = "percentage"
 }

@@ -16,8 +16,8 @@ set $sup Mod1
 # is used in the bar {} block below.
 font pango:firacode 8
 
-default_border pixel 3
-default_floating_border pixel 3
+default_border pixel 1
+default_floating_border pixel 1
 
 gaps inner 5
 
@@ -47,17 +47,22 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
+# Use brightnessctl to adjust screen brightness
+# You might have to set some kernel parameters "acpi_backlight=native"
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +10%
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%-
+
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec --no-startup-id xterm
 
 # kill focused window
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
-bindsym $mod+x exec --no-startup-id dmenu_run
+bindsym $mod+x exec --no-startup-id dmenu_run -i -fn 'Fira Code-8' -nb '#000000' -nf '#888888' -sb '#FF0000' -sf '#FFFFFF'
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
@@ -70,7 +75,7 @@ bindsym $mod+f exec firefox
 bindsym $mod+o exec obsidian
 
 # screenshot
-bindsym --release $sup+Shift+s exec scrot -f -s -F '/home/jt/Pictures/Screenshots/%Y-%m-d_%H-%M-%S.png' -e 'xclip -selection clipboard -t image/png -i $f' -e 'notify-send -a scrot -i $f "Screenshot Successful!"'
+bindsym --release $sup+Shift+s exec scrotnot
 
 # change focus
 bindsym $mod+j focus left
@@ -194,6 +199,9 @@ bindsym $mod+r mode "resize"
 
 exec_always --no-startup-id picom --daemon
 exec_always --no-startup-id feh --bg-center /home/jt/Pictures/red.png
+
+# Make screenshot thumbnails float by default
+for_window [class="feh_scrot"] floating enable
 
 # class                 border  backgr. text    indicator child_border
 client.focused          #FF0000 #000000 #FFFFFF #FF5959   #FF0000
