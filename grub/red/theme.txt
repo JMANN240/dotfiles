@@ -1,0 +1,49 @@
+# title stuff
+title-text: "Welcome to Arch"
+title-font: "Fira Code Regular 24"
+title-color: "#FF0000"
+
+# terminal stuff
+terminal-font: "Fira Code Regular 12"
+terminal-left: "0"
+terminal-top: "0"
+terminal-width: "100%"
+terminal-height: "100%"
+terminal-border: "0"
+
+# background image
+desktop-image: "red.png"
+
+
+# boot menu
++ boot_menu {
+	left = 50%-250
+	width = 500
+	top = 50%-150
+	height = 300
+
+	item_font = "Fira Code Regular 12"
+	item_color = "#FFFFFF"
+	selected_item_font = "Fira Code Bold 12"
+	selected_item_color = "#FF0000"
+
+	item_height = 16
+}
+
+# progress bar
++ progress_bar {
+	id = "__timeout__"
+
+	left = 0
+	width = 100%
+	top = 100%+16
+	height = 16
+
+	fg_color = "#FFFFFF"
+	bg_color = "#000000"
+	border_color = "#FF0000"
+	text_color = "#FF0000"
+
+	font = "Fira Code Regular 12"
+	text = "Booting in %d seconds"
+}

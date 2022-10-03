@@ -194,3 +194,9 @@ opencm () {
 	ard compile --fqbn OpenCM904:OpenCM904:OpenCM904 $1 &&
 	ard upload -p /dev/ttyACM0 --fqbn OpenCM904:OpenCM904:OpenCM904 $1
 }
+
+pinout () {
+	if [ "$1" = "nano" ]; then
+		cat ~/.nano.pinout
+	fi
+}
