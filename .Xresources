@@ -1,0 +1,51 @@
+*.faceName: Fira Code:size=10:antialias=true
+*.metaSendsEscape: true
+*.bellIsUrgent: true
+*.cursorBlink: true
+*.cursorOnTime: 600
+*.cursorOffTime: 600
+*.scaleHeight: 1
+*.internalBorder: 0
+*.borderWidth: 0
+
+*.translations: #override \n\
+	Ctrl Shift <Key>C: copy-selection(CLIPBOARD) \n\
+	Ctrl Shift <Key>V: insert-selection(CLIPBOARD)
+
+! special
+*.foreground:   #ffffff
+*.background:   #000000
+*.cursorColor:  #ffffff
+
+! black
+*.color0:       #666666
+*.color8:       #999999
+
+! red
+*.color1:       #cc6666
+*.color9:       #ff9999
+
+! green
+*.color2:       #66cc99
+*.color10:      #99ffcc
+
+! yellow
+*.color3:       #cc9966
+*.color11:      #ffcc99
+
+! blue
+*.color4:       #6699cc
+*.color12:      #99ccff
+
+! magenta
+*.color5:       #cc6699
+*.color13:      #ff99cc
+
+! cyan
+*.color6:       #66cccc
+*.color14:      #99ffff
+
+! white
+*.color7:       #cccccc
+*.color15:      #ffffff
+
