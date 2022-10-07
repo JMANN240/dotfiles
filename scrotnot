@@ -1,0 +1,12 @@
+#!/bin/bash
+
+FILENAME=$(scrot -f -s -F '/home/jt/Pictures/Screenshots/%Y-%m-%d_%H-%M-%S.png' -e 'echo $f')
+if [ "$FILENAME" = "" ]; then
+	notify-send -a scrot "Screenshot Failed!"
+else
+	xclip -selection clipboard -t image/png -i $FILENAME
+	ACTION=$(notify-send -a scrot --action=default -i $FILENAME "Screenshot Successful!")
+	if [ "$ACTION" = "0" ]; then
+		feh --class feh_scrot $FILENAME
+	fi
+fi
