@@ -21,6 +21,7 @@ order += "disk /"
 order += "cpu_usage"
 order += "memory"
 order += "tztime local"
+order += "read_file weather"
 
 wireless _first_ {
         format_up = " W: %quality @ %ip (%essid) "
@@ -60,4 +61,10 @@ volume master {
 	format = " %volume "
 	format_muted = " muted (%volume) "
 	device = "default"
+}
+
+read_file weather {
+	format = " %content "
+	path = "~/.weather"
+	color_good = "#FFFFFF"
 }

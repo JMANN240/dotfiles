@@ -27,6 +27,7 @@ toml
 .tmux.conf
 .utils.sh
 .vimrc
+.weather.py
 .Xresources
 
 ### home/.config
