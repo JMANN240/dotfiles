@@ -85,7 +85,7 @@ alphabetize(){
 }
 
 # Make ranger cd you to the last directory you were in
-alias ranger='ranger --choosedir="$HOME/.lastdir"; cd $(cat ~/.lastdir)'
+alias ranger='ranger --choosedir="$HOME/.lastdir"; cd "$(cat ~/.lastdir)"'
 
 # Prompt for the indices from an array
 promptify() {

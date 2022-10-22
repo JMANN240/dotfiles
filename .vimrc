@@ -32,7 +32,7 @@ command! -nargs=1 Runs execute ":silent exec '!".<q-args>."' | redraw!"
 autocmd VimEnter * :Runs tmux set-option key-table vim
 autocmd VimLeave * :Runs tmux set-option key-table root
 
-autocmd BufWritePost *.tex :call system("pdflatex", expand('%:p'))
+autocmd BufWritePost *.tex :call system("pdflatex '".expand('%:p')."'")
 
 for i in range(1,12) | execute 'map <F'.i.'> '.i.'gt' | endfor
 
