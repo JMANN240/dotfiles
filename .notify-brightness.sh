@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ -f "$HOME/.brightness-notification-id.tmp" ]; then
+if [ -s "$HOME/.brightness-notification-id.tmp" ]; then
 	REPLACE="--replace-id=$(cat $HOME/.brightness-notification-id.tmp)"
 else
 	REPLACE=""
