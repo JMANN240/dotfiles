@@ -2,12 +2,6 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
-# If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-      *) return;;
-esac
-
 # Disable stopping and starting the terminal, outdated garbo
 stty -ixon
 
@@ -51,7 +45,14 @@ include ~/.java.sh
 include ~/.registers.sh
 
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-  tmux new-session
+	OPTION=$(cat <(echo "n: New Session") <(tmux list-sessions) | fzf --reverse -1 | sed -n 's/:.*$//p');
+	if [ "$OPTION" = "n" ]; then
+		tmux new-session
+	else
+		tmux attach-session -t $OPTION
+	fi
 fi
 
 export FZF_DEFAULT_COMMAND="find -L ! -name '*.class'"
+
+export PATH=$PATH:$HOME/.cargo/bin
