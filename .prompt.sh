@@ -1,3 +1,11 @@
+#           ___    _____   _      _______  _        ___
+# |  |  |  /   \  |     \ | \   |    |    | \   |  /     |
+# |  |  | |_____| |_____/ |  \  |    |    |  \  | |   __ |
+#  \/ \/  |     | |     \ |   \_| ___|___ |   \_|  \___/ .
+
+# If you use VS Code with WSL, make sure that "Shell Integration" 
+# is disabled! It will cause the prompt to function incorrectly!
+
 # Set a custom propmt
 PROMPT_COMMAND=prompt_cmd
 
@@ -25,6 +33,10 @@ prompt_cmd() {
             PS1+="\[$(tput setaf 3)\]"; 
         fi
         PS1+="$BRANCH\[$(tput sgr0)\]) "
+    fi
+    if [[ $VIRTUAL_ENV != "" ]]; then 
+        ENV=$(basename $VIRTUAL_ENV)
+        PS1+="(\[$(tput setaf 5)\]$ENV\[$(tput sgr0)\]) "
     fi
     PS1+="\[$(tput setaf 3)\]\$\[$(tput sgr0)\] "
 }
