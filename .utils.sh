@@ -200,3 +200,11 @@ pinout () {
 		cat ~/.nano.pinout
 	fi
 }
+
+act () {
+	if [ $# -eq 0 ]; then
+		source env/bin/activate
+	else
+		source $1/bin/activate
+	fi
+}

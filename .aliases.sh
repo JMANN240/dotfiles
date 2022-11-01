@@ -16,3 +16,9 @@ alias wscan="sudo iwlist wlp2s0 scan"
 
 # Restart the network manager on my laptop
 alias wscan="sudo service network-manager restart"
+
+# Alias for opening
+alias open="xdg-open"
+
+# Alias for deactivating a python venv
+alias deact="deactivate"
