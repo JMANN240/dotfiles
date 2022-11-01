@@ -46,10 +46,14 @@ include ~/.registers.sh
 
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
 	OPTION=$(cat <(echo "n: New Session") <(tmux list-sessions) | fzf --reverse -1 | sed -n 's/:.*$//p');
-	if [ "$OPTION" = "n" ]; then
-		tmux new-session
-	else
-		tmux attach-session -t $OPTION
+	if [ "$OPTION" != "" ]; then
+		tmux set-option -g exit-empty off
+		tmux start-server
+		if [ "$OPTION" = "n" ]; then
+			tmux new-session
+		else
+			tmux attach-session -t $OPTION
+		fi
 	fi
 fi
 
