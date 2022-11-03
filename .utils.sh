@@ -124,17 +124,32 @@ vim () {
 	$VIM_PATH --version | grep -q +clientserver;
 	HAS_CLIENTSERVER="$?";
 
+	echo $TERM | grep -q tmux;
+	IN_TMUX="$?";
+
     if [ $HAS_CLIENTSERVER -eq 0 ]; then
 		$VIM_PATH --serverlist | grep -q VIM;
 		SERVER_EXISTS="$?";
 
-        if [ $SERVER_EXISTS -eq 0 ] && [[ $NARGS -ne 0 ]]; then
-            $VIM_PATH --servername vim --remote-tab "$@"
+        if [ $SERVER_EXISTS -eq 0 ]; then
+            VIM_COMMAND="$VIM_PATH --servername vim --remote-tab $@";
+			if [ $IN_TMUX -eq 0 ]; then
+				$VIM_COMMAND
+				tmux select-pane -t $(tmux list-panes -F '#T #P' | grep 'VIM' | sed 's/.*VIM \(.*\)/\1/');
+			else
+				$VIM_COMMAND
+			fi
         else
-            $VIM_PATH --servername vim "$@"
+            VIM_COMMAND="$VIM_PATH --servername vim $@";
+			if [ $IN_TMUX -eq 0 ]; then
+				tmux split-window -bv -l 80% "tmux select-pane -T VIM && $VIM_COMMAND"
+			else
+				$VIM_COMMAND
+			fi
         fi
     else
-        $VIM_PATH "$@"
+		VIM_COMMAND="$VIM_PATH $@";
+		$VIM_COMMAND
     fi
 }
 
