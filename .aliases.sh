@@ -22,3 +22,8 @@ alias open="xdg-open"
 
 # Alias for deactivating a python venv
 alias deact="deactivate"
+
+# Aliases for systemctl stuff
+alias start="sudo systemctl start"
+alias stop="sudo systemctl stop"
+alias restart="sudo systemctl restart"

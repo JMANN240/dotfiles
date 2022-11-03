@@ -223,3 +223,17 @@ act () {
 		source $1/bin/activate
 	fi
 }
+
+gpu () {
+	if [ $# -eq 1 ]; then
+		if [ $1 = "on" ]; then
+			sudo modprobe nvidia
+			sudo modprobe nvidia_uvm
+			sudo system76-power graphics power on
+		elif [ $1 = "off" ]; then
+			sudo rmmod nvidia_uvm
+			sudo rmmod nvidia
+			sudo system76-power graphics power off
+		fi
+	fi
+}
