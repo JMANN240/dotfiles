@@ -12,6 +12,8 @@ set tabstop=4
 set ai
 set si
 
+set scrolloff=10
+
 hi TabLine NONE
 hi TabLineSel term=reverse cterm=reverse gui=reverse
 hi TabLineFill NONE
