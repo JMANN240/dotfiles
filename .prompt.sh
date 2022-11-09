@@ -26,7 +26,7 @@ prompt_cmd() {
     PS1+="[\[$(tput setaf 6)\]\W\[$(tput sgr0)\]] "
     if [[ $BRANCH != "" ]]; then 
         PS1+="("
-        if [[ $BRANCH = "master" ]]; then 
+        if [[ $BRANCH = "master" || $BRANCH = "main" ]]; then 
             PS1+="\[$(tput bold)\]"; 
             PS1+="\[$(tput setaf 1)\]"; 
         else 
