@@ -12,6 +12,9 @@ HISTCONTROL=ignoreboth
 # append to the history file, don't overwrite it
 shopt -s histappend
 
+# force 24-bit color
+export COLORTERM="24bit"
+
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000
 HISTFILESIZE=2000
@@ -45,7 +48,9 @@ include ~/.java.sh
 include ~/.registers.sh
 
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-	if [ tmux info &> /dev/null ]; then
+	tmux info &> /dev/null
+	TMUX_RUNNING="$?"
+	if [ $TMUX_RUNNING -eq 0 ]; then
 		OPTION=$(cat <(echo "n: New Session") <(tmux list-sessions) | fzf --reverse -1 | sed -n 's/:.*$//p');
 		if [ "$OPTION" != "" ]; then
 			if [ "$OPTION" = "n" ]; then
@@ -62,3 +67,5 @@ fi
 export FZF_DEFAULT_COMMAND="find -L ! -name '*.class'"
 
 export PATH=$PATH:$HOME/.cargo/bin
+
+source /home/jt/google-cloud-sdk/pkg/google-cloud-sdk/opt/google-cloud-sdk/path.bash.inc
