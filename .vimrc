@@ -21,9 +21,9 @@ hi TabLineFill NONE
 execute "set <M-r>=\er"
 map <M-r> :source ~/.vimrc<CR>
 
-vmap <C-c> y
-vmap <C-x> x
-imap <C-v> <esc>Pi
+vmap <C-c> "+y
+vmap <C-x> "+x
+imap <C-v> <esc>"+Pi
 nmap <C-s> :w<CR>
 imap <C-s> <esc>:w<CR>i
 nmap <C-q> :q<CR>
