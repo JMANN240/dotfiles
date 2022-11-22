@@ -200,6 +200,11 @@ ardnano () {
 	ard upload -p /dev/ttyUSB0 --fqbn arduino:avr:nano:cpu=atmega328old $1
 }
 
+arduno () {
+	ard compile --fqbn arduino:avr:uno $1 &&
+	ard upload -p /dev/ttyUSB0 --fqbn arduino:avr:uno $1
+}
+
 esp () {
 	ard compile --fqbn esp8266:esp8266:generic $1 &&
 	ard upload -p /dev/ttyUSB0 --fqbn esp8266:esp8266:generic $1
@@ -227,10 +232,14 @@ act () {
 gpu () {
 	if [ $# -eq 1 ]; then
 		if [ $1 = "on" ]; then
+			sudo system76-power graphics power on
 			sudo modprobe nvidia
 			sudo modprobe nvidia_uvm
-			sudo system76-power graphics power on
+			sudo modprobe nvidia_modeset
+			sudo modprobe nvidia_drm
 		elif [ $1 = "off" ]; then
+			sudo rmmod nvidia_drm
+			sudo rmmod nvidia_modeset
 			sudo rmmod nvidia_uvm
 			sudo rmmod nvidia
 			sudo system76-power graphics power off

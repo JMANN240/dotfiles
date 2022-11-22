@@ -48,18 +48,22 @@ include ~/.java.sh
 include ~/.registers.sh
 
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-	tmux info &> /dev/null
+	tmux list-sessions &> /dev/null
 	TMUX_RUNNING="$?"
 	if [ $TMUX_RUNNING -eq 0 ]; then
+		echo "running"
 		OPTION=$(cat <(echo "n: New Session") <(tmux list-sessions) | fzf --reverse -1 | sed -n 's/:.*$//p');
 		if [ "$OPTION" != "" ]; then
 			if [ "$OPTION" = "n" ]; then
+				echo "new"
 				tmux new-session
 			else
+				echo "attach"
 				tmux attach-session -t $OPTION
 			fi
 		fi
 	else
+		echo "not running"
 		tmux new-session
 	fi
 fi
