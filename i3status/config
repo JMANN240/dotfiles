@@ -9,9 +9,9 @@
 general {
         colors = true
         interval = 1
-	color_good = "#00FF00"
-	color_bad = "#FF0000"
-	color_degraded = "#FFFF00"
+	color_good = "#46E369"
+	color_bad = "#E34759"
+	color_degraded = "#E3D147"
 }
 
 order += "wireless _first_"
@@ -66,5 +66,5 @@ volume master {
 read_file weather {
 	format = " %content "
 	path = "~/.weather"
-	color_good = "#FFFFFF"
+	color_good = "#B8E6C2"
 }

@@ -19,7 +19,7 @@ font pango:firacode 8
 default_border pixel 1
 default_floating_border pixel 1
 
-gaps inner 5
+gaps inner 7
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -62,7 +62,7 @@ bindsym $mod+Return exec --no-startup-id xterm
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
-bindsym $mod+x exec --no-startup-id dmenu_run -i -fn 'Fira Code-8' -nb '#000000' -nf '#888888' -sb '#FF0000' -sf '#FFFFFF'
+bindsym $mod+x exec --no-startup-id dmenu_run -i -fn 'Fira Code-8' -nb '#1E2D20' -nf '#184736' -sb '#13604E' -sf '#B8E6C2'
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
@@ -198,29 +198,29 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 exec_always --no-startup-id picom --daemon
-exec_always --no-startup-id feh --bg-center /home/jt/Pictures/red.png
+exec_always --no-startup-id feh --bg-center /home/jt/Pictures/pine.png
 
 # Make screenshot thumbnails float by default
 for_window [class="feh_scrot"] floating enable
 
 # class                 border  backgr. text    indicator child_border
-client.focused          #FF0000 #000000 #FFFFFF #FF5959   #FF0000
-client.focused_inactive #FF5959 #000000 #FFFFFF #FF7C7C   #FF5959
-client.unfocused        #444444 #000000 #888888 #666666   #444444
-client.urgent           #FFFFFF #000000 #FF0000 #FFFFFF   #FFFFFF
-client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+client.focused          #13604E #1E2D20 #FFFFFF #419060   #13604E
+client.focused_inactive #184736 #1E2D20 #FFFFFF #13604E   #184736
+client.unfocused        #444444 #1E2D20 #888888 #666666   #444444
+client.urgent           #FFFFFF #1E2D20 #13604E #FFFFFF   #FFFFFF
+client.placeholder      #1E2D20 #0c0c0c #ffffff #1E2D20   #0c0c0c
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
 	status_command i3status
 	colors {
-		background #000000
-		statusline #FFFFFF
-		separator #FF0000
-		focused_workspace #FF0000 #000000 #FFFFFF
-		active_workspace #FF5959 #000000 #FFFFFF
-		inactive_workspace #444444 #000000 #888888
-		urgent_workspace #FFFFFF #FF0000 #000000
+		background #1E2D20
+		statusline #B8E6C2
+		separator #13604E
+		focused_workspace #13604E #1E2D20 #B8E6C2
+		active_workspace #184736 #1E2D20  #B8E6C2
+		inactive_workspace #184736 #1E2D20  #13604E
+		urgent_workspace #B8E6C2 #13604E #1E2D20 
 	}
 }

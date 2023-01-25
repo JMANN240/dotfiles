@@ -30,3 +30,6 @@ alias restart="sudo systemctl restart"
 
 # Ask nicely
 alias pls="sudo"
+
+# Alias to remove PEAP cache
+alias reap="sudo rm /var/lib/iwd/.eap-tls-session-cache && restart iwd"
