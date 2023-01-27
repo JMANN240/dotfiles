@@ -246,3 +246,36 @@ gpu () {
 		fi
 	fi
 }
+
+copyfile () {
+	cat $1 | xclip -sel c
+}
+
+savepaste () {
+	xclip -o -sel c > $1
+}
+
+export TRASH_DIR="$HOME/.trash"
+
+trash () {
+	for FILE in $@; do
+		FILE_PATH=$(realpath "$FILE")
+		FILE_TRASH_DIR=$(echo "$FILE_PATH" | sed -n "s|\(.*\)\/[^\/]\+|$TRASH_DIR\1|p")
+		mkdir -p $FILE_TRASH_DIR
+		mv $(realpath "$FILE") "$FILE_TRASH_DIR"
+		echo "Trashed $FILE"
+	done
+}
+
+restore () {
+	for FILE in $(find "$TRASH_DIR" -type f | fzf -m); do
+		NEW_FILE=$(echo "$FILE" | sed -n "s|$TRASH_DIR||p")
+		mv "$FILE" "$NEW_FILE"
+		echo "Restored $NEW_FILE"
+	done
+}
+
+empty () {
+	rm -rf $TRASH_DIR/*
+	echo "Emptied the trash"
+}
