@@ -33,3 +33,7 @@ alias pls="sudo"
 
 # Alias to remove PEAP cache
 alias reap="sudo rm /var/lib/iwd/.eap-tls-session-cache && restart iwd"
+
+# Audio outputs
+alias headphones="pactl set-sink-port 0 analog-output-headphones"
+alias speakers="pactl set-sink-port 0 analog-output-lineout"
