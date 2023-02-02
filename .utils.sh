@@ -279,3 +279,12 @@ empty () {
 	rm -rf $TRASH_DIR/*
 	echo "Emptied the trash"
 }
+
+aur () {
+	PACKAGE_NAME=$(echo "$1" | perl -pe 's|.*/([^/]+?)\.git|$1|')
+	git clone --depth 1 $1
+	cd $PACKAGE_NAME
+	makepkg -si
+	cd ..
+	rm -rf $PACKAGE_NAME
+}

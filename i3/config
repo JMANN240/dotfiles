@@ -25,6 +25,9 @@ gaps inner 7
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 #font pango:DejaVu Sans Mono 8
 
+# Correct monitor setup
+exec --no-startup-id /home/jt/.config/autostart
+
 # Start XDG autostart .desktop files using dex. See also
 # https://wiki.archlinux.org/index.php/XDG_Autostart
 # exec --no-startup-id dex --autostart --environment i3
@@ -47,10 +50,17 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && ~/.notify-volume.sh && $refresh_i3status
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
+# Switch audio output
+bindsym $mod+$sup+h exec --no-startup-id headphones
+bindsym $mod+$sup+s exec --no-startup-id speakers
+
 # Use brightnessctl to adjust screen brightness
 # You might have to set some kernel parameters "acpi_backlight=native"
 bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +10% && ~/.notify-brightness.sh 
 bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%- && ~/.notify-brightness.sh 
+
+# Start notifier
+exec --no-startup-id dunst
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -75,7 +85,7 @@ bindsym $mod+f exec firefox
 bindsym $mod+o exec obsidian
 
 # screenshot
-bindsym --release $sup+Shift+s exec scrotnot
+bindsym --release $sup+Shift+s exec --no-startup-id scrotnot
 
 # change focus
 bindsym $mod+j focus left
@@ -169,6 +179,8 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+# Shutdown
+bindsym $mod+Escape exec shutdown -h now
 
 # resize window (you can also use the mouse for that)
 mode "resize" {

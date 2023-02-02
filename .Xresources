@@ -8,7 +8,7 @@
 *.internalBorder: 0
 *.borderWidth: 0
 
-*.translations: #override \n\
+XTerm*VT100.translations: #override \n\
 	Ctrl Shift <Key>C: copy-selection(CLIPBOARD) \n\
 	Ctrl Shift <Key>V: insert-selection(CLIPBOARD)
 

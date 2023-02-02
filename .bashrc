@@ -67,5 +67,4 @@ fi
 export FZF_DEFAULT_COMMAND="find -L ! -name '*.class'"
 
 export PATH=$PATH:$HOME/.cargo/bin
-
-source /home/jt/google-cloud-sdk/pkg/google-cloud-sdk/opt/google-cloud-sdk/path.bash.inc
+. "$HOME/.cargo/env"
