@@ -15,7 +15,7 @@ mkdir -p ~/Pictures/ && cp pine_hd.png ~/Pictures/pine.png
 # Stuff that goes in /usr/local/bin/
 sudo mkdir -p /usr/local/bin/ && sudo cp scrotnot /usr/local/bin/scrotnot && sudo chmod +x /usr/local/bin/scrotnot
 sudo mkdir -p /usr/local/bin/ && sudo cp fl /usr/local/bin/fl && sudo chmod +x /usr/local/bin/fl
-sudo mkdir -p /usr/local/bin/ && sudo cp scrotnot /usr/local/bin/octave-gui && sudo chmod +x /usr/local/bin/octave-gui
+sudo mkdir -p /usr/local/bin/ && sudo cp octave-gui /usr/local/bin/octave-gui && sudo chmod +x /usr/local/bin/octave-gui
 
 # Stuff that goes in /boot/grub/themes/
 sudo mkdir -p /boot/grub/themes/pine/ && sudo cp pine/* /boot/grub/themes/pine/

@@ -15,7 +15,7 @@ cp ~/Pictures/pine.png pine_hd.png
 # Stuff that goes in /usr/local/bin/
 sudo cp /usr/local/bin/scrotnot scrotnot 
 sudo cp /usr/local/bin/fl fl 
-sudo cp /usr/local/bin/octave-gui scrotnot 
+sudo cp /usr/local/bin/octave-gui octave-gui
 
 # Stuff that goes in /boot/grub/themes/
 sudo cp /boot/grub/themes/pine/* pine/ 
