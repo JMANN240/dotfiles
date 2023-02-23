@@ -68,3 +68,5 @@ export FZF_DEFAULT_COMMAND="find -L ! -name '*.class'"
 
 export PATH=$PATH:$HOME/.cargo/bin
 . "$HOME/.cargo/env"
+
+export PATH=$PATH:$HOME/.local/bin
