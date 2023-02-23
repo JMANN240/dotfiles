@@ -12,6 +12,10 @@
 set $mod Mod4
 set $sup Mod1
 
+set_from_resource $fg i3wm.foreground
+set_from_resource $bg i3wm.background
+set_from_resource $c1 i3wm.color1
+
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
 font pango:firacode 8
@@ -72,7 +76,8 @@ bindsym $mod+Return exec --no-startup-id xterm
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
-bindsym $mod+x exec --no-startup-id dmenu_run -i -fn 'Fira Code-8' -nb '#1E2D20' -nf '#184736' -sb '#13604E' -sf '#B8E6C2'
+# bindsym $mod+x exec --no-startup-id dmenu_run -i -fn 'Fira Code-8' -nb '#1E2D20' -nf '#184736' -sb '#13604E' -sf '#B8E6C2'
+bindsym $mod+x exec --no-startup-id dmenu_run -i -fn 'Fira Code-8' -nb "$bg" -nf "$fg" -sb "$c1" -sf "$bg"
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
@@ -182,6 +187,7 @@ bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 # Shutdown
 bindsym $mod+Escape exec shutdown -h now
+bindsym $mod+Shift+Escape exec reboot
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -212,6 +218,10 @@ bindsym $mod+r mode "resize"
 
 exec_always --no-startup-id picom --daemon
 exec_always --no-startup-id feh --bg-center /home/jt/Pictures/pine.png
+
+# Interesting music goes to workspace 4
+bindsym $sup+m workspace 4; exec --no-startup-id firefox --new-window 'https://www.youtube.com/playlist?list=PLMejUA9a8sUOyjcGkA4tEK-ZAg-hCZaNX'
+
 
 # Make screenshot thumbnails float by default
 for_window [class="feh_scrot"] floating enable
