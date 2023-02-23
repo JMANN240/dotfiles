@@ -3,21 +3,21 @@
 # for examples
 
 # Disable stopping and starting the terminal, outdated garbo
-stty -ixon
+stty -ixon;
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
-HISTCONTROL=ignoreboth
+export HISTCONTROL=ignoreboth;
 
 # append to the history file, don't overwrite it
-shopt -s histappend
+shopt -s histappend;
 
 # force 24-bit color
-export COLORTERM="24bit"
+export COLORTERM="24bit";
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTSIZE=1000;
+HISTFILESIZE=2000;
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -68,3 +68,11 @@ export FZF_DEFAULT_COMMAND="find -L ! -name '*.class'"
 
 export PATH=$PATH:$HOME/.cargo/bin
 . "$HOME/.cargo/env"
+
+export PATH=$PATH:$HOME/.local/bin
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+export VLC_VERBOSE=0
