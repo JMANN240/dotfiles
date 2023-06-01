@@ -19,12 +19,12 @@ def alphabetizeJava(filepath):
 		remove_newlines_start_index = 0
 		if declares_package:
 			remove_newlines_start_index = 1
-		
+
 		insert_index = remove_newlines_start_index
-		
+
 		while (newline.match(file_lines[insert_index]) is not None or line_types['import'].match(file_lines[insert_index]) is not None):
 			file_lines.pop(insert_index)
-		
+
 		if declares_package:
 			file_lines.insert(insert_index, "\n")
 			insert_index+=1
@@ -40,7 +40,7 @@ def alphabetizeJava(filepath):
 			file_lines.insert(insert_index, import_line)
 			insert_index+=1
 			last_import_prefix = import_prefix
-		
+
 		file_lines.insert(insert_index, "\n")
 		insert_index+=1
 
@@ -70,7 +70,7 @@ def alphabetizeJsp(filepath):
 		taglibs = sorted(taglibs, key=lambda x: x.get('prefix'))
 
 		insert_index = 0
-		
+
 		while (newline.match(file_lines[insert_index]) is not None or any([line_type.match(file_lines[insert_index]) is not None for line_type in line_types.values()])):
 			file_lines.pop(insert_index)
 
@@ -88,7 +88,7 @@ def alphabetizeJsp(filepath):
 		for import_line in import_lines:
 			file_lines.insert(insert_index, import_line)
 			insert_index+=1
-		
+
 		file_lines.insert(insert_index, "\n")
 		insert_index+=1
 
@@ -118,12 +118,12 @@ def alphabetizeCpp(filepath):
 		remove_newlines_start_index = 0
 		if has_include_guard:
 			remove_newlines_start_index = 2
-		
+
 		insert_index = remove_newlines_start_index
-		
+
 		while (newline.match(file_lines[insert_index]) is not None or any([line_type.match(file_lines[insert_index]) is not None for line_type in line_types.values()])):
 			file_lines.pop(insert_index)
-		
+
 		if has_include_guard:
 			file_lines.insert(insert_index, "\n")
 			insert_index+=1
@@ -138,7 +138,7 @@ def alphabetizeCpp(filepath):
 		for quote_include_line in quote_include_lines:
 			file_lines.insert(insert_index, quote_include_line)
 			insert_index+=1
-		
+
 		file_lines.insert(insert_index, "\n")
 		insert_index+=1
 

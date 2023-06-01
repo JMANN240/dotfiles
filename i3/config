@@ -60,8 +60,8 @@ bindsym $mod+$sup+s exec --no-startup-id speakers
 
 # Use brightnessctl to adjust screen brightness
 # You might have to set some kernel parameters "acpi_backlight=native"
-bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +10% && ~/.notify-brightness.sh 
-bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%- && ~/.notify-brightness.sh 
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +10% && ~/.notify-brightness.sh
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%- && ~/.notify-brightness.sh
 
 # Start notifier
 exec --no-startup-id dunst
@@ -244,6 +244,6 @@ bar {
 		focused_workspace #13604E #1E2D20 #B8E6C2
 		active_workspace #184736 #1E2D20  #B8E6C2
 		inactive_workspace #184736 #1E2D20  #13604E
-		urgent_workspace #B8E6C2 #13604E #1E2D20 
+		urgent_workspace #B8E6C2 #13604E #1E2D20
 	}
 }

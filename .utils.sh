@@ -28,7 +28,7 @@ export FFIND_IGNORED_EXTENSIONS=( class )
 ffind() {
     BRANCH=$(gbranch)
 
-    if [[ $BRANCH != "" ]]; then 
+    if [[ $BRANCH != "" ]]; then
         SEARCH_ROOT=$(git rev-parse --show-toplevel)
     else
         SEARCH_ROOT="."
@@ -48,7 +48,7 @@ fopen() {
     if [ ${#FOUND_FILES[@]} -eq 0 ]; then
         return -1;
     fi
-    
+
     # If there is only one, exit with 0
     if [ ${#FOUND_FILES[@]} -eq 1 ]; then
         code ${FOUND_FILES[0]}
@@ -102,7 +102,7 @@ promptify() {
 sffind() {
     BRANCH=$(gbranch)
 
-    if [[ $BRANCH != "" ]]; then 
+    if [[ $BRANCH != "" ]]; then
         SEARCH_ROOT=$(git rev-parse --show-toplevel)
     else
         SEARCH_ROOT="."
