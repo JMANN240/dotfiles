@@ -8,6 +8,7 @@ mkdir -p ~/.config/i3/ && cp i3/config ~/.config/i3/config
 mkdir -p ~/.config/i3status/ && cp i3status/config ~/.config/i3status/config
 mkdir -p ~/.config/dunst/ && cp dunst/dunstrc ~/.config/dunst/dunstrc
 mkdir -p ~/.config/ && cp picom.conf ~/.config/picom.conf
+mkdir -p ~/.config/Code/User/ && cp settings.json ~/.config/Code/User/settings.json
 
 # Stuff that goes in ~/Pictures/
 mkdir -p ~/Pictures/ && cp pine_hd.png ~/Pictures/pine.png

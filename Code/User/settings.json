@@ -1,0 +1,11 @@
+{
+	"editor.fontFamily": "'Fira Code', 'Droid Sans Mono', 'monospace', monospace",
+	"editor.fontLigatures": true,
+	"window.menuBarVisibility": "toggle",
+	"terminal.integrated.shellIntegration.enabled": false,
+	"editor.insertSpaces": false,
+	"editor.detectIndentation": false,
+	"editor.renderWhitespace": "all",
+	"terminal.integrated.enableMultiLinePasteWarning": false,
+	"python.terminal.activateEnvironment": false
+}

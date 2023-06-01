@@ -2,6 +2,9 @@
 alias rebash="source ~/.bashrc"
 alias bashrc="code ~/.bashrc"
 
+# Browser default
+alias x-www-browser=firefox
+
 # Pretty colors
 alias ls="ls --color=auto"
 
@@ -10,12 +13,6 @@ alias vcode="source ~/.vcode.sh"
 
 # Lazy Git (Thanks, Frankie)
 alias lg="lazygit"
-
-# Scan for wifi networks on my laptop
-alias wscan="sudo iwlist wlp2s0 scan"
-
-# Restart the network manager on my laptop
-alias wscan="sudo service network-manager restart"
 
 # Alias for opening
 alias open="xdg-open"
