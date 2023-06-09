@@ -67,6 +67,11 @@ wt() {
     fi
 }
 
+wtc() {
+	WORKTREE_PATH="$(groot)/../$1"
+	git worktree add -b $1 $WORKTREE_PATH && cd $WORKTREE_PATH
+}
+
 # Remove dead worktrees and branches
 wtr() {
     if [ ! -z "$(gbranch)" ]; then
@@ -90,7 +95,7 @@ wtr() {
 # Remove dead branches
 gbr() {
     if [ ! -z "$(gbranch)" ]; then
-        DEAD_BRANCHES=($(git branch -vv | sed -n -E 's/^.*\[origin\/(.*): gone\].*$/\1/p' | xargs));
+        DEAD_BRANCHES=($(git branch -vv | perl -ne 'print if s/^..(\S+) +[0-9a-f]{9} (?:\(.+\) )?\[.+: gone\].+$/$1/' | xargs));
         for DEAD_BRANCH in ${DEAD_BRANCHES[@]}; do
             git branch -D $DEAD_BRANCH;
         done
@@ -122,10 +127,10 @@ gb() {
         BEHIND_COLOR=3
         DEAD_COLOR=1
 
-        UNTRACKED_BRANCHES=($(git branch -vv | sed -n -E 's/^..([[:graph:]]*) +[[:xdigit:]]{9} [^\[].*$/\1/p' | xargs));
-        ALIVE_BRANCHES=($(git branch -vv | sed -n -E 's/^.*\[origin\/([[:graph:]]*)\].*$/\1/p' | xargs));
-        BEHIND_BRANCHES=($(git branch -vv | sed -n -E 's/^.*\[origin\/([[:graph:]]*): behind.*\].*$/\1/p' | xargs));
-        DEAD_BRANCHES=($(git branch -vv | sed -n -E 's/^.*\[origin\/([[:graph:]]*): gone\].*$/\1/p' | xargs));
+        UNTRACKED_BRANCHES=($(git branch -vv | perl -ne 'print if s/^..(\S+) +[0-9a-f]{9} (?!\(.+\))(?!\[.+\]).+$/$1/' | xargs));
+        ALIVE_BRANCHES=($(git branch -vv | perl -ne 'print if not (/^..\S+ +[0-9a-f]{9} (?:\(.+\) )?\[.+: behind\].+$/ or /^..(\S+) +[0-9a-f]{9} (?:\(.+\) )?\[.+: gone\].+$/)' | perl -ne 'print if s/^..(\S+) +[0-9a-f]{9} (?:\(.+\) )?\[.+\].+$/$1/' | xargs));
+        BEHIND_BRANCHES=($(git branch -vv | perl -ne 'print if s/^..(\S+) +[0-9a-f]{9} (?:\(.+\) )?\[.+: behind\].+$/$1/' | xargs));
+        DEAD_BRANCHES=($(git branch -vv | perl -ne 'print if s/^..(\S+) +[0-9a-f]{9} (?:\(.+\) )?\[.+: gone\].+$/$1/' | xargs));
 
         if [ ${#UNTRACKED_BRANCHES[@]} -gt 0 ]; then
             printf "\n"
@@ -215,10 +220,24 @@ gazm() {
 # Fetch all behind branches
 gpb() {
     if [ ! -z "$(gbranch)" ]; then
-        BEHIND_BRANCHES=($(git branch -vv | sed -n -E 's/^.*\[origin\/(.*): behind.*\].*$/\1/p' | xargs));
+        BEHIND_BRANCHES=($(git branch -vv | perl -ne 'print if s/^..(\S+) +[0-9a-f]{9} (?:\(.+\) )?\[.+: behind\].+$/$1/' | xargs));
         for BEHIND_BRANCH in ${BEHIND_BRANCHES[@]}; do
             git fetch origin $BEHIND_BRANCH:$BEHIND_BRANCH --quiet;
             echo "Fetched $BEHIND_BRANCH";
+        done;
+    else
+        return 1;
+    fi
+}
+
+# Print My Lines: print the lines that you have changed in this branch
+pml() {
+	if [ ! -z "$(gbranch)" ]; then
+        export GIT_USERNAME=$(git config user.name);
+        GIT_ROOT=$(groot);
+        DIFF_FILES=($(git diff --name-status master.. | perl -ne "print if s|^M\s(.+)|$GIT_ROOT/\$1|" | xargs));
+        for DIFF_FILE in ${DIFF_FILES[@]}; do
+            git blame --line-porcelain master.. $DIFF_FILE | perl -0777 -pe 's/[[:xdigit:]]{40} [[:digit:]]+ ([[:digit:]]+)(?: [[:digit:]]+)?\nauthor (.*)\n(?:.*\n){7,8}(?!boundary).*\nfilename (.*)\n(?:\t| {8})(.*)/$2:$3:$1: $4/g' | sed -n "s|$GIT_USERNAME:|$GIT_ROOT/|p"
         done;
     else
         return 1;
@@ -234,7 +253,7 @@ sml() {
         OLD_GREP_CONTEXT_SIZE=$GREP_CONTEXT_SIZE;
         GREP_CONTEXT_SIZE=0;
         for DIFF_FILE in ${DIFF_FILES[@]}; do
-            git blame --line-porcelain $DIFF_FILE | perl -0777 -pe 's/[[:xdigit:]]{40} [[:digit:]]+ ([[:digit:]]+)(?: [[:digit:]]+)?\nauthor (.*)\n(?:.*\n){8,9}filename (.*)\n(?:\t| {8})(.*)/$2:$3:$1: $4/g' | sed -n "s|$GIT_USERNAME:| $GIT_ROOT/|p" | sgrep "$*"
+            git blame --line-porcelain master $DIFF_FILE | perl -0777 -pe 's/[[:xdigit:]]{40} [[:digit:]]+ ([[:digit:]]+)(?: [[:digit:]]+)?\nauthor (.*)\n(?:.*\n){8,9}filename (.*)\n(?:\t| {8})(.*)/$2:$3:$1: $4/g' | sed -n "s|$GIT_USERNAME:| $GIT_ROOT/|p" | sgrep "$*"
         done;
         GREP_CONTEXT_SIZE=$OLD_GREP_CONTEXT_SIZE;
     else
