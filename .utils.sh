@@ -21,6 +21,25 @@ hist() {
     history | sgrep $*
 }
 
+fuzzy-hist() {
+        history -d '-1'
+        COMMAND=$(history | perl -pe 's/^( +\d+) +(.+)$/$2/' | fzf --tac --exact);
+        if [ ! -z "$COMMAND" ]; then
+                eval "$COMMAND";
+                eval "$PROMPT_COMMAND";
+                printf "${PS1@P}$COMMAND\n";
+                history -a;
+                printf "fuzzy-hist\n$COMMAND\n" >> ~/.bash_history;
+                history -c;
+                history -r;
+        else
+                history -a;
+                printf "fuzzy-hist\n" >> ~/.bash_history;
+                history -c;
+                history -r;
+        fi
+}
+
 # File extensions to ignore with ffind
 export FFIND_IGNORED_EXTENSIONS=( class )
 
@@ -42,28 +61,19 @@ ffind() {
 # Fuzzy Open, ffind and open with prompt
 fopen() {
     # An array of all of the files which match the argument given
-    FOUND_FILES=($(ffind $1 | xargs));
+    FOUND_FILES=($(find -L $(groot) ! -name "*.class" -type f | fzf -0 -1 -m --exact --reverse --bind pgdn:preview-page-down,pgup:preview-page-up --preview='cat {}' -q $1 | xargs));
 
     # If there aren't any, exit with -1
     if [ ${#FOUND_FILES[@]} -eq 0 ]; then
         return -1;
     fi
 
-    # If there is only one, exit with 0
-    if [ ${#FOUND_FILES[@]} -eq 1 ]; then
-        code ${FOUND_FILES[0]}
-        return 0;
-    fi
+    code ${FOUND_FILES[@]}
+}
 
-    # Otherwise, prompt the use about which ones they want to open
-    echo ${FOUND_FILES[@]} | sed 's/ /\n/g' | sed '=' | sed 'N; s/\n/ /' | sed 's/^\(.*\) /(\1) /g';
-    echo -n "Open files: ";
-    read -a OPEN_FILE_INDICES;
-    OPEN_FILES=();
-    for FILE_INDEX in ${OPEN_FILE_INDICES[@]}; do
-        OPEN_FILES+=(${FOUND_FILES[FILE_INDEX-1]})
-    done
-    code ${OPEN_FILES[@]}
+infopen() {
+    FOUND_FILES=($(grep -rlF "$1" . | xargs));
+    code ${FOUND_FILES[@]}
 }
 
 # An implementation of fopen that uses fzf and opens in vim
@@ -287,4 +297,12 @@ aur () {
 	makepkg -si
 	cd ..
 	rm -rf $PACKAGE_NAME
+}
+
+rerun () {
+        clear; eval $(history | tail -n2 | head -n1 | perl -pe 's| +\d+ +(.+)|$1|');
+}
+
+colorize() {
+        perl -pe 's|#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})|\x1b[38;2;${\(hex($1))};${\(hex($2))};${\(hex($3))}m#$1$2$3\x1b[0m|g'
 }
