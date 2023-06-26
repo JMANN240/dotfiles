@@ -49,6 +49,27 @@ ga() {
     fi
 }
 
+# Really fancy git add! Requires git (of course), fzf, and perl.
+gadd() {
+        if [ ! -z "$(git branch 2> /dev/null | perl -ne 'print $1 if /^\* (.+)$/')" ]; then
+                if [ ! -z "$(git status -s --porcelain)" ]; then
+                        GIT_ROOT=$(git rev-parse --show-toplevel)
+                        FILES=($(
+                                git status -s --porcelain |
+                                perl -ne "print if s|( M\|\?\?) (.+)|$GIT_ROOT/\$2|" |
+                                fzf -0 -m --reverse --ansi --bind pgdn:preview-page-down,pgup:preview-page-up --preview='git diff --color -- {}'
+                        ));
+                        git add ${FILES[@]};
+                        read -p "Commit Message: ";
+                        git commit -m "$REPLY";
+                else
+                        printf 'There is nothing to add.\n'
+                fi
+        else
+                return 1;
+        fi
+}
+
 # Change worktrees with a prompt
 wt() {
     if [ ! -z "$(gbranch)" ]; then
