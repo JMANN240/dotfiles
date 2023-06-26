@@ -77,3 +77,7 @@ export NVM_DIR="$HOME/.nvm"
 
 export VLC_VERBOSE=0
 stty erase ^H
+
+# add up-arrow autocompletion / search functionality
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
