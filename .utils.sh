@@ -306,3 +306,18 @@ rerun () {
 colorize() {
         perl -pe 's|#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})|\x1b[38;2;${\(hex($1))};${\(hex($2))};${\(hex($3))}m#$1$2$3\x1b[0m|g'
 }
+
+be() {
+        if [ "$#" -eq 0 ]; then
+                echo "Dotfile not provided!" >&2;
+                return 1;
+        fi
+        FILEPATH="$HOME/.$1.sh";
+        vim $FILEPATH;
+        source $FILEPATH;
+}
+
+jbuild() {
+        SUB="${2:-j}"
+        perl -0777pe "s|<$SUB:(.+?)=(.+?)>(.*?)<\/$SUB>|\${\\(\$2 eq \$ENV{\$1} ? \$3 : \"\")}|gs" $1
+}
