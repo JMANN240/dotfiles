@@ -22,22 +22,33 @@ hist() {
 }
 
 fuzzy-hist() {
-        history -d '-1'
-        COMMAND=$(history | perl -pe 's/^( +\d+) +(.+)$/$2/' | fzf --tac --exact);
-        if [ ! -z "$COMMAND" ]; then
-                eval "$COMMAND";
-                eval "$PROMPT_COMMAND";
-                printf "${PS1@P}$COMMAND\n";
-                history -a;
-                printf "fuzzy-hist\n$COMMAND\n" >> ~/.bash_history;
-                history -c;
-                history -r;
-        else
-                history -a;
-                printf "fuzzy-hist\n" >> ~/.bash_history;
-                history -c;
-                history -r;
-        fi
+	history -d '-1'
+	COMMAND=$(history | perl -pe 's/^( +\d+) +(.+)$/$2/' | fzf --tac --exact);
+	if [ ! -z "$COMMAND" ]; then
+		eval "$COMMAND";
+		eval "$PROMPT_COMMAND";
+		printf "${PS1@P}$COMMAND\n";
+		history -a;
+		printf "fuzzy-hist\n$COMMAND\n" >> ~/.bash_history;
+		history -c;
+		history -r;
+	else
+		history -a;
+		printf "fuzzy-hist\n" >> ~/.bash_history;
+		history -c;
+		history -r;
+	fi
+}
+
+eval-string() {
+	COMMAND=$1;
+	eval "$PROMPT_COMMAND";
+	printf "${PS1@P}$COMMAND\n";
+	eval "$COMMAND";
+	history -a;
+	printf "$COMMAND\n" >> ~/.bash_history;
+	history -c;
+	history -r;
 }
 
 # File extensions to ignore with ffind
@@ -78,10 +89,14 @@ infopen() {
 
 # An implementation of fopen that uses fzf and opens in vim
 vopen() {
-    FILES=$(fzf -m --exact --query="$1" --select-1)
-    if [[ $FILES != "" ]]; then
-        vim -p $FILES
+    # An array of all of the files which match the argument given
+    FOUND_FILES=($(find -L $(groot) ! -name "*.class" -type f | fzf -0 -1 -m --exact --reverse --bind pgdn:preview-page-down,pgup:preview-page-up --preview='cat {}' -q $1 | xargs));
+
+    # If there aren't any, exit with -1
+    if [ ${#FOUND_FILES[@]} -eq 0 ]; then
+        return -1;
     fi
+	tvim -p $FOUND_FILES
 }
 
 # Perl one-liner to get rid of trailing whitespace
@@ -122,7 +137,7 @@ sffind() {
 }
 
 # If clientserver is enabled, use it
-vim () {
+tvim () {
 	NARGS="$#"
     VIM_PATH=$(which vim 2>/dev/null)
 
@@ -150,9 +165,9 @@ vim () {
 				$VIM_COMMAND
 			fi
         else
-            VIM_COMMAND="$VIM_PATH --servername vim $@";
+            VIM_COMMAND="$VIM_PATH --servername VIM $@";
 			if [ $IN_TMUX -eq 0 ]; then
-				tmux split-window -bv -l 80% "tmux select-pane -T VIM && $VIM_COMMAND"
+				tmux split-window -bv -e "DISPLAY=$DISPLAY" -l 80% "tmux select-pane -T VIM && $VIM_COMMAND"
 			else
 				$VIM_COMMAND
 			fi
@@ -179,7 +194,7 @@ vfe () {
         if [ -z "$OUTPUT" ];  then
             break;
         else
-            vim $(echo $OUTPUT | sed -E "s|[^ ]+|$SEARCH_ROOT&|g")
+            tvim $(echo $OUTPUT | sed -E "s|[^ ]+|$SEARCH_ROOT&|g")
         fi
     done
 }
@@ -258,7 +273,7 @@ gpu () {
 }
 
 copyfile () {
-	cat $1 | xclip -sel c
+	xclip -sel c $1
 }
 
 savepaste () {
@@ -299,25 +314,123 @@ aur () {
 	rm -rf $PACKAGE_NAME
 }
 
+msg () {
+	if [ ! -f ~/.userips ]
+	then
+		nmap -sn 10.21.98.1-255 | perl -ne 'print if s|^Nmap scan report for (.+)\.ddm\.local \((.+)\)$|$1: $2|' > ~/.userips
+	fi
+	IP=$(cat ~/.userips | fzf | perl -pe 's|.+: (.+)|$1|')
+	if [ -z "$IP" ]
+	then
+		return 0
+	fi
+	if [ -z "$1" ]
+	then
+		read MESSAGE
+	else
+		MESSAGE="$1"
+	fi
+	powershell.exe "Invoke-WmiMethod -Path Win32_Process -Name Create -ArgumentList \"msg * /TIME:0 $USER: $MESSAGE\" -ComputerName $IP" > /dev/null
+}
+
 rerun () {
-        clear; eval $(history | tail -n2 | head -n1 | perl -pe 's| +\d+ +(.+)|$1|');
+	clear; eval $(history | tail -n2 | head -n1 | perl -pe 's| +\d+ +(.+)|$1|');
 }
 
 colorize() {
-        perl -pe 's|#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})|\x1b[38;2;${\(hex($1))};${\(hex($2))};${\(hex($3))}m#$1$2$3\x1b[0m|g'
+	perl -pe 's|#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})|\x1b[38;2;${\(hex($1))};${\(hex($2))};${\(hex($3))}m#$1$2$3\x1b[0m|g'
+}
+
+split() {
+	perl -pe "s|(\S.{1,$1})\s|\$1\n|g"
+}
+
+showsplit() {
+	git show --color $1 | split 80
+}
+
+printfunc() {
+	declare | perl -0777 -ne "print if s|.*($1)\s*\(\)\s*\{ (.+?)\n\}.*|\$1() {\$2\n}|gs"
+}
+
+copyfunc() {
+	copyfile <(printfunc $1)
+}
+
+rmhere() {
+	find -maxdepth 1 | fzf -m --reverse --ansi --preview 'if [ -f {} ]; then cat {}; elif [ -d {} ]; then ls -la --color {}; fi;' | xargs rm -rf
+}
+
+bhash() {
+	perl -ne "print if s|$2: (.+)|\$1|" $1
+}
+
+bhash2() {
+	MFPATH="/opt/tomcat/webapps/$1/META-INF/MANIFEST.MF";
+	BRANCH="$(bhash $MFPATH Build-GitBranch)";
+	HASH="$(bhash $MFPATH Build-GitHash)";
+	echo "$BRANCH $HASH" | perl -pe 's|\r||';
 }
 
 be() {
-        if [ "$#" -eq 0 ]; then
-                echo "Dotfile not provided!" >&2;
-                return 1;
-        fi
-        FILEPATH="$HOME/.$1.sh";
-        vim $FILEPATH;
-        source $FILEPATH;
+	if [ "$#" -eq 0 ]; then
+		echo "Dotfile not provided!" >&2;
+		return 1;
+	fi
+	FILEPATH="$HOME/.$1.sh";
+	nvim $FILEPATH;
+	source $FILEPATH;
 }
 
 jbuild() {
-        SUB="${2:-j}"
-        perl -0777pe "s|<$SUB:(.+?)=(.+?)>(.*?)<\/$SUB>|\${\\(\$2 eq \$ENV{\$1} ? \$3 : \"\")}|gs" $1
+	SUB="${2:-j}"
+	perl -0777pe "s|<$SUB:(.+?)=(.+?)>(.*?)<\/$SUB>|\${\\(\$2 eq \$ENV{\$1} ? \$3 : \"\")}|gs" $1
 }
+
+ctl() {
+	sudo systemctl $1 $2
+}
+
+cstart() {
+	ctl start $1
+}
+
+cstop() {
+	ctl stop $1
+}
+
+crestart() {
+	ctl restart $1
+}
+
+cstatus() {
+	ctl status $1
+}
+
+naptime() {
+	powershell.exe "Invoke-WmiMethod -Path Win32_Process -Name Create -ArgumentList \"msg * /TIME:0 Naptime!\" -ComputerName $1"
+	sleep 1
+	powershell.exe "Invoke-WmiMethod -Path Win32_Process -Name Create -ArgumentList \"rundll32.exe powrprof.dll,SetSuspendState sleep\" -ComputerName $1"
+}
+
+coderegex()
+{
+	results=$(grep --color -rlP "$1")
+	if [ -z "$results" ]
+	then
+		echo "Couldn't anything that matches \"$1\""
+	else
+		selection=$(grep --color -riIl "$1" | fzf -m --border=bottom --border-label="Select one or more files to open" --preview="cat {} | grep --color=ALWAYS -C 5 $1" --preview-window=down)
+		if [[ $selection = *[![:space:]]* ]]
+		then
+			echo "$selection" | xargs code
+		fi
+	fi
+}
+
+docs()
+{
+	package=$(dedoc search openjdk~11 | perl -ne 'print if s|^\d+  (.+)$|\1|g' | fzf -q "$1" -1 -0);
+	dedoc -c open -c $COLUMNS openjdk~11 $package | batcat -p;
+}
+

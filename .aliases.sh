@@ -46,3 +46,10 @@ alias 7="i3-msg -q workspace 7;"
 alias 8="i3-msg -q workspace 8;"
 alias 9="i3-msg -q workspace 9;"
 alias 10="i3-msg -q workspace 10;"
+
+# Tmux renaming
+alias rn='tmux rename $(gbranch)'
+
+alias bat='batcat'
+
+alias ta='tmux attach'

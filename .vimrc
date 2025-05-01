@@ -6,17 +6,19 @@ set ignorecase
 set number
 set wildmenu
 
+set whichwrap+=<,>,[,]
+
 set shiftwidth=4
 set tabstop=4
 
-set ai
-set si
+set noai
 
 set scrolloff=10
 
 hi TabLine NONE
 hi TabLineSel term=reverse cterm=reverse gui=reverse
 hi TabLineFill NONE
+set showtabline=2
 
 execute "set <M-r>=\er"
 map <M-r> :source ~/.vimrc<CR>
