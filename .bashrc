@@ -9,11 +9,11 @@ stty -ixon;
 # See bash(1) for more options
 export HISTCONTROL=ignoreboth;
 
-# Force 24bit color
-export COLORTERM='24bit';
-
 # append to the history file, don't overwrite it
 shopt -s histappend;
+
+# force 24-bit color
+export COLORTERM="24bit";
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000;
@@ -44,6 +44,8 @@ include ~/.aliases.sh
 include ~/.utils.sh
 include ~/.prompt.sh
 include ~/.git.sh
+include ~/.java.sh
+include ~/.registers.sh
 
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
 	tmux list-sessions &> /dev/null
@@ -62,6 +64,11 @@ if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
 	fi
 fi
 
+export FZF_DEFAULT_COMMAND="find -L ! -name '*.class'"
+
+export PATH=$PATH:$HOME/.cargo/bin
+. "$HOME/.cargo/env"
+
 export PATH=$PATH:$HOME/.local/bin
 
 export NVM_DIR="$HOME/.nvm"
@@ -70,12 +77,8 @@ export NVM_DIR="$HOME/.nvm"
 
 export VLC_VERBOSE=0
 
-# add up-arrow autocompletion / search functionality
-bind '"\e[A": history-search-backward'
-bind '"\e[B": history-search-forward'
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/home/jt/Code/ai-podcast/google-cloud-sdk/path.bash.inc' ]; then . '/home/jt/Code/ai-podcast/google-cloud-sdk/path.bash.inc'; fi
 
-export MANPAGER="sh -c 'col -bx | batcat -l man -p'"
-
-fortune fortunes | cowsay -t
-
-export LESS="FRXi"
+# The next line enables shell command completion for gcloud.
+if [ -f '/home/jt/Code/ai-podcast/google-cloud-sdk/completion.bash.inc' ]; then . '/home/jt/Code/ai-podcast/google-cloud-sdk/completion.bash.inc'; fi

@@ -19,7 +19,7 @@ for mode, details in modes_config.items():
 
     if (details.get('anti_side_effect', '') != ""):
         anti_side_effect += f" \; {details.get('anti_side_effect', '')}"
-
+        
 
     if details.get('copy', False):
         side_effect += " \; copy-mode"

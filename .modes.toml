@@ -36,8 +36,6 @@ C-Right = "resize-pane -R"
 a = "select-window -p"
 d = "select-window -n"
 s = "select-window -l"
-C-a = "swap-window -d -t -"
-C-d = "swap-window -d -t +"
 
 [scroll]
 key = "C-s"

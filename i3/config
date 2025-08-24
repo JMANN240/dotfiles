@@ -60,8 +60,8 @@ bindsym $mod+$sup+s exec --no-startup-id speakers
 
 # Use brightnessctl to adjust screen brightness
 # You might have to set some kernel parameters "acpi_backlight=native"
-bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +10% && ~/.notify-brightness.sh
-bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%- && ~/.notify-brightness.sh
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +10% && ~/.notify-brightness.sh 
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%- && ~/.notify-brightness.sh 
 
 # Start notifier
 exec --no-startup-id dunst
@@ -83,6 +83,9 @@ bindsym $mod+x exec --no-startup-id dmenu_run -i -fn 'Fira Code-8' -nb "$bg" -nf
 # There also is i3-dmenu-desktop which only displays applications shipping a
 # .desktop file. It is a wrapper around dmenu, so you need that installed.
 # bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
+
+# Select emoji
+bindsym $mod+period exec --no-startup-id dmenu-emoji.sh list | dmenu -l 10 -i -fn 'Fira Code-24' -nb "$bg" -nf "$fg" -sb "#13604E" -sf "$fg" | dmenu-emoji.sh copy
 
 # launch applications
 bindsym $mod+d exec discord
@@ -226,6 +229,8 @@ bindsym $sup+m workspace 4; exec --no-startup-id firefox --new-window 'https://w
 # Make screenshot thumbnails float by default
 for_window [class="feh_scrot"] floating enable
 
+for_window [class="miniquad-application"] floating enable
+
 # class                 border  backgr. text    indicator child_border
 client.focused          #13604E #1E2D20 #FFFFFF #419060   #13604E
 client.focused_inactive #184736 #1E2D20 #FFFFFF #13604E   #184736
@@ -244,6 +249,6 @@ bar {
 		focused_workspace #13604E #1E2D20 #B8E6C2
 		active_workspace #184736 #1E2D20  #B8E6C2
 		inactive_workspace #184736 #1E2D20  #13604E
-		urgent_workspace #B8E6C2 #13604E #1E2D20
+		urgent_workspace #B8E6C2 #13604E #1E2D20 
 	}
 }

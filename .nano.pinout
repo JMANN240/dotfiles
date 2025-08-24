@@ -14,7 +14,7 @@
       PB0 |o D8  \   /  A1 o| PC1 ADC1
       PB1 |o D9   \_/   A0 o| PC0 ADC0
       PB2 |o D10       REF o|     AREF
-      PB3 |o D11+-----+3V3 o|
+      PB3 |o D11+-----+3V3 o| 
       PB4 |o D12|     |D13 o| PB5
           |O    |     |    O|
           +-----+     +-----+
